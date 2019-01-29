@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
+ * Copyright 2010-2019 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
  * that can be found in the license/LICENSE.txt file.
  */
 
@@ -216,7 +216,7 @@ class PsiSourceCompilerForInline(private val codegen: ExpressionCodegen, overrid
     }
 
     @Suppress("UNCHECKED_CAST")
-    private class FakeMemberCodegen(
+    internal class FakeMemberCodegen(
         internal val delegate: MemberCodegen<*>,
         declaration: KtElement,
         codegenContext: FieldOwnerContext<*>,

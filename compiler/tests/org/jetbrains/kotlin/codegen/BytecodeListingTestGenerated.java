@@ -78,6 +78,16 @@ public class BytecodeListingTestGenerated extends AbstractBytecodeListingTest {
         runTest("compiler/testData/codegen/bytecodeListing/defaultImpls.kt");
     }
 
+    @TestMetadata("doubleCrossinline.kt")
+    public void testDoubleCrossinline_1_2() throws Exception {
+        runTestWithPackageReplacement("compiler/testData/codegen/bytecodeListing/doubleCrossinline.kt", "kotlin.coroutines.experimental");
+    }
+
+    @TestMetadata("doubleCrossinline.kt")
+    public void testDoubleCrossinline_1_3() throws Exception {
+        runTestWithPackageReplacement("compiler/testData/codegen/bytecodeListing/doubleCrossinline.kt", "kotlin.coroutines");
+    }
+
     @TestMetadata("emptyMultifileFacade.kt")
     public void testEmptyMultifileFacade() throws Exception {
         runTest("compiler/testData/codegen/bytecodeListing/emptyMultifileFacade.kt");

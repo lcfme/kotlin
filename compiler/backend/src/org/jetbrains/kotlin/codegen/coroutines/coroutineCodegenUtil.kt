@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
+ * Copyright 2010-2019 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license
  * that can be found in the license/LICENSE.txt file.
  */
 
@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.backend.common.isBuiltInSuspendCoroutineUnintercepte
 import org.jetbrains.kotlin.builtins.isBuiltinFunctionalType
 import org.jetbrains.kotlin.codegen.*
 import org.jetbrains.kotlin.codegen.binding.CodegenBinding
+import org.jetbrains.kotlin.codegen.inline.PsiSourceCompilerForInline
 import org.jetbrains.kotlin.codegen.inline.addFakeContinuationMarker
 import org.jetbrains.kotlin.codegen.state.GenerationState
 import org.jetbrains.kotlin.codegen.state.KotlinTypeMapper
@@ -220,7 +221,11 @@ private fun NewResolvedCallImpl<VariableDescriptor>.asDummyOldResolvedCall(bindi
 fun ResolvedCall<*>.isSuspendNoInlineCall(codegen: ExpressionCodegen, languageVersionSettings: LanguageVersionSettings): Boolean {
     val isInlineLambda = this.safeAs<VariableAsFunctionResolvedCall>()
         ?.variableCall?.resultingDescriptor?.safeAs<ValueParameterDescriptor>()
-        ?.let { it.isCrossinline || (!it.isNoinline && codegen.context.functionDescriptor.isInline) } == true
+        ?.let {
+            // These crossinline lambdas are going to be called, not inlined
+            (it.isCrossinline && codegen.parentCodegen !is PsiSourceCompilerForInline.FakeMemberCodegen) ||
+                    (!it.isNoinline && codegen.context.functionDescriptor.isInline)
+        } == true
 
     val functionDescriptor = resultingDescriptor as? FunctionDescriptor ?: return false
     if (!functionDescriptor.unwrapInitialDescriptorForSuspendFunction().isSuspend) return false
